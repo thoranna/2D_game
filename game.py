@@ -1,5 +1,5 @@
 """
-    Simple shapes and motions for T-511-TGRA Assignment 1
+    2D-Game
     Author: Þóranna Dís Bender (thoranna18@ru.is)
 """
 
@@ -9,89 +9,11 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
+from particle_system import Particle, Particles
+from ball import MovingBall, WINDOWHEIGHT, WINDOWWIDTH
+
 import random
 import math
-
-WINDOWWIDTH = 800
-WINDOWHEIGHT = 600
-
-LEFT = 0
-RIGHT = 0
-UP = 0
-DOWN = 0
-
-class MovingObject:
-    def __init__(self, x_pos, y_pos, id):
-
-        self.x_pos = x_pos
-        self.y_pos = WINDOWHEIGHT - y_pos
-        self.radius = 25
-        self.id = id
-
-        self.x_change = 0.7 if random.random() < 0.7 else -0.7
-        self.y_change = 0.7 if random.random() < 0.7 else -0.7
-
-        self.r = 0.0
-        self.g = 1.0
-        self.b = 0.0
-
-        self.is_colliding = False
-
-    def update(self):
-
-        if LEFT:
-            if self.x_pos - self.radius*2 <= 0:
-                pass
-            else:
-                self.x_pos -= 0.5
-        if RIGHT:
-            if self.x_pos + self.radius*2 >= WINDOWWIDTH:
-                pass
-            else:
-                self.x_pos += 0.5
-        if DOWN:
-            if self.y_pos - self.radius*2 <= 0:
-                pass
-            else:
-                self.y_pos -= 0.5
-        if UP:
-            if self.y_pos + self.radius*2 >= WINDOWHEIGHT:
-                pass
-            else:
-                self.y_pos += 0.5
-        if not RIGHT and not LEFT and not DOWN and not UP:
-            self.x_pos += self.x_change
-            self.y_pos += self.y_change
-            if self.y_pos + self.radius > WINDOWHEIGHT or self.y_pos - self.radius < 0:
-                self.y_change = self.y_change * -1
-                self.r = random.random()
-                self.g = random.random()
-                self.b = random.random()
-            if self.x_pos + self.radius > WINDOWWIDTH or self.x_pos - self.radius < 0:
-                self.x_change = self.x_change * -1
-                self.r = random.random()
-                self.g = random.random()
-                self.b = random.random()
-        
-        if self.is_colliding:
-            self.r = random.random()
-            self.g = random.random()
-            self.b = random.random()
-            self.is_colliding = False
-    
-    def display(self):
-
-        glBegin(GL_TRIANGLE_FAN) # BEGIN CIRCLE 
-        glColor3f(self.r, self.g, self.b) # SET COLOR
-        glVertex2f(self.x_pos, self.y_pos) # DEFINE STARTING POS
-        twice_pi = 2.5*3.142
-        off = 0.45
-        m_range = 30
-
-        for i in range(m_range):
-            glVertex2f(self.x_pos + (self.radius*math.cos(i*twice_pi/m_range)), self.y_pos + (self.radius*math.sin(i*twice_pi/m_range)))
-            glColor3f(self.r*off, self.g*off, self.b*off)
-        glEnd()
 
 def check_collision(game_object1, game_object2):
     d = math.sqrt(((game_object2.x_pos - game_object1.x_pos)**2+(game_object2.y_pos - game_object1.y_pos)**2))
@@ -102,7 +24,6 @@ def check_collision(game_object1, game_object2):
 def calc_change(game_object1, game_object2):
     pass
 
-
 if __name__ == "__main__":
 
     # INITIAL DISPLAY
@@ -110,10 +31,26 @@ if __name__ == "__main__":
     pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), DOUBLEBUF|OPENGL)
     glClearColor(0.0, 0.0, 0.0, 1.0)
     
-    acc_id = 2
-    b1 = MovingObject(300, 400, 0)
-    b2 = MovingObject(400, 500, 1)
-    boxes = [b1, b2]
+    # INITIALIZE MOVING BALLS
+    balls = []
+    explosions = []
+
+    positions = [(100, 200), 
+                (160, 260),
+                (220, 320), 
+                (280, 380), 
+                (340, 440),
+                (400, 500), 
+                (200, 100), 
+                (260, 160), 
+                (320, 220), 
+                (440, 340), 
+                (500, 400), 
+                (600, 60), 
+                (660, 560)]
+    
+    for t in positions:
+        balls.append(MovingBall(*t))
 
     while True:
         for event in pygame.event.get():
@@ -144,8 +81,7 @@ if __name__ == "__main__":
                         x_pos = WINDOWWIDTH - b.radius
                     elif x_pos - b.radius < 0:
                         x_pos = b.radius
-                    boxes.append(MovingObject(x_pos, y_pos, acc_id))
-                    acc_id += 1
+                    balls.append(MovingBall(x_pos, y_pos))
             elif event.type == pygame.KEYUP:
                 if event.key == K_LEFT:
                     LEFT = 0
@@ -157,17 +93,41 @@ if __name__ == "__main__":
                     UP = 0
 
         # UPDATE LOGIC
-        for box1 in boxes:
-            for box2 in boxes:
-                if box1.id != box2.id:
-                    if check_collision(box1, box2):
-                        box1.x_change = box1.x_change*-1
-                        box1.x_pos += box1.x_change
-                        box2.y_change = box2.y_change*-1
-                        box2.y_pos += box2.y_change
-                        box1.is_collding = True
-                        box2.is_colliding = True
-            box1.update()
+        for i, b1 in enumerate(balls):
+            for j in range(i+1, len(balls)):
+                b2 = balls[j]
+                if check_collision(b1, b2):
+                    if not ((b1.x_pos + b1.radius > WINDOWWIDTH or b1.x_pos - b1.radius < 0) or (b2.y_pos + b2.radius > WINDOWHEIGHT or b2.y_pos - b2.radius < 0)):
+                        b1.x_change = b1.x_change*-1
+                        b1.y_change = b1.y_change*-1
+                        b2.x_change = b2.x_change*-1
+                        b2.y_change = b2.y_change*-1
+
+                        # NUDGE
+                        b1.x_pos += b1.x_change*10
+                        b2.x_pos += b2.x_change*10
+                        b1.y_pos += b1.y_change*10
+                        b2.y_pos += b2.y_change*10
+ 
+                        b1.is_colliding = True
+                        b2.is_colliding = True
+
+                        b1.update()
+                        b2.update()
+
+                        explosions.append(Particles(b1.x_pos+(b2.x_pos-b1.x_pos)/2, b1.y_pos+(b2.y_pos-b1.y_pos)/2))
+        
+            if not b1.is_colliding:
+                b1.update()
+
+        explosions_to_delete = []
+        for i, explosion in enumerate(explosions):
+            if len(explosion.particle_list) == 0:
+                explosions_to_delete.append(i)
+            explosion.update()
+        
+        for i in explosions_to_delete[::-1]:
+            explosions.pop(i)
         
         # DISPLAY
         glClear(GL_COLOR_BUFFER_BIT)
@@ -179,6 +139,11 @@ if __name__ == "__main__":
 
         glViewport(0, 0, WINDOWWIDTH, WINDOWHEIGHT)
         gluOrtho2D(0, WINDOWWIDTH, 0, WINDOWHEIGHT)
-        for b in boxes:
+        
+        for b in balls:
             b.display()
+
+        for i, explosion in enumerate(explosions):
+            explosion.display()
+        
         pygame.display.flip()
