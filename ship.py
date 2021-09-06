@@ -5,21 +5,21 @@ import math
 
 WINDOWWIDTH = 800
 WINDOWHEIGHT = 600
-
+    
 class Ship:
-    def __init__(self):
+    def __init__(self, x_pos, y_pos):
         self.r = 1
         self.b = 1
         self.g = 1
 
-        self.x_pos = WINDOWWIDTH/2
-        self.y_pos = WINDOWHEIGHT/2
+        self.x_pos = x_pos
+        self.y_pos = y_pos
 
         self.orbit_angle = 0
 
         self.speed = 1.3
 
-        self.height = 40
+        self.height = 20
         self.width = 5
 
     def display(self):
@@ -32,8 +32,9 @@ class Ship:
         
         glColor3f(self.r, self.g, self.b)
 
-        A = (-self.width, 0)
-        B = (self.width, 0)
+        # Body of the ship 
+        A = (-self.width, -self.height)
+        B = (self.width, -self.height)
         C = (-self.width, self.height)
         D = (self.width, self.height)
         E = (0, self.height+25) # Top point
@@ -42,6 +43,7 @@ class Ship:
         H = (-self.width-20, self.height-30) # Left wing
         I = (self.width + 20, self.height-30) # Right wing
 
+        # BODY 
         glVertex2f(*A)
         glVertex2f(*C)
         glVertex2f(*D)
@@ -50,17 +52,17 @@ class Ship:
         glVertex2f(*D)
         glVertex2f(*C)
 
-        # TOPPUR - X 
+        # TOP
         glVertex2f(*D)
         glVertex2f(*C)
         glVertex2f(*E)
 
-        # VINSTRI HLIÐ
+        # LEFT SIDE
         glVertex2f(*C)
         glVertex2f(*F)
         glVertex2f(*H)
 
-        # HÆGRI HLIÐ
+        # RIGHT SIDE
         glVertex2f(*D)
         glVertex2f(*G)
         glVertex2f(*I)
@@ -70,9 +72,9 @@ class Ship:
         glPopMatrix()
     
     def update(self, delta_time, left, right, up, down):
-        if right:
-            self.orbit_angle -= 0.01*delta_time
         if left:
+            self.orbit_angle -= 0.01*delta_time
+        if right:
             self.orbit_angle += 0.01*delta_time
         if up:
             self.x_pos += self.speed*delta_time*math.cos(math.pi/2 + self.orbit_angle)

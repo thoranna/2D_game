@@ -8,40 +8,40 @@ WINDOWWIDTH = 800
 WINDOWHEIGHT = 600
 
 class MovingBall:
-    def __init__(self, x_pos, y_pos):
+    def __init__(self, x_pos, y_pos, radius = 27):
 
         self.x_pos = x_pos
-        self.y_pos = WINDOWHEIGHT - y_pos
-        self.radius = 27
+        self.y_pos = y_pos
+        self.radius = radius 
 
-        self.x_change = 0.5 if random.random() < 0.5 else -0.5
-        self.y_change = 0.5 if random.random() < 0.5 else -0.5
-
+        self.speed = 0.2
+        self.angle = 2*3.1415*random.random()
+        
         self.r = random.random()
         self.g = random.random()
         self.b = random.random()
 
         self.is_colliding = False
 
-    def update(self):
+    def update(self, delta_time):
 
-        self.x_pos += self.x_change
-        self.y_pos += self.y_change
-        if self.y_pos + self.radius > WINDOWHEIGHT or self.y_pos - self.radius < 0:
-            self.y_change = self.y_change * -1
+        self.x_pos += self.speed*delta_time*math.cos(self.angle)
+        self.y_pos += self.speed*delta_time*math.sin(self.angle)
+        if (self.y_pos + self.radius > WINDOWHEIGHT or self.y_pos - self.radius < 0) or (self.x_pos + self.radius > WINDOWWIDTH or self.x_pos - self.radius < 0):
+            if self.y_pos + self.radius > WINDOWHEIGHT or self.y_pos - self.radius < 0:
+                self.angle = -self.angle
+            else:
+                self.angle = math.pi - self.angle
+
             if self.y_pos + self.radius > WINDOWHEIGHT:
-                self.y_pos -= 0.5
-            else:
-                self.y_pos += 0.5
-            self.r = random.random()
-            self.g = random.random()
-            self.b = random.random()
-        if self.x_pos + self.radius > WINDOWWIDTH or self.x_pos - self.radius < 0:
-            self.x_change = self.x_change * -1
+                self.y_pos = WINDOWHEIGHT - self.radius
+            elif self.y_pos - self.radius < 0:
+                self.y_pos = self.radius
             if self.x_pos + self.radius > WINDOWWIDTH:
-                self.x_pos -= 0.5
-            else:
-                self.x_pos += 0.5
+                self.x_pos = WINDOWWIDTH - self.radius
+            elif self.x_pos - self.radius < 0:
+                self.x_pos = self.radius
+            
             self.r = random.random()
             self.g = random.random()
             self.b = random.random()

@@ -27,7 +27,6 @@ class Particle:
     
     def display(self):
         
-        glEnable(GL_BLEND) # ENABLE TRANSPARANCY 
         glBegin(GL_TRIANGLE_FAN)
         glColor4f(self.r, self.g, self.b, self.decay)
         glVertex2f(self.x_pos, self.y_pos)
