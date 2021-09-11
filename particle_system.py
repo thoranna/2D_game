@@ -19,11 +19,12 @@ class Particle:
         self.b = 1
 
         self.decay = random.random()*0.5 + 0.5
+        self.decay_rate = 0.01
 
     def update(self):
         self.x_pos += self.x_change
         self.y_pos += self.y_change
-        self.decay -= 0.01
+        self.decay -= self.decay_rate
     
     def display(self):
         
@@ -41,15 +42,15 @@ class Particle:
         glEnd()
 
 class Particles:
-    def __init__(self, x_pos, y_pos):
+    def __init__(self, x_pos, y_pos, num_particles = 20):
         self.x_pos = x_pos
         self.y_pos = y_pos
         self.particle_list = []
+        self.num_particles = num_particles
         self.initialize_particles()
 
     def initialize_particles(self):
-        
-        for _ in range(20):
+        for _ in range(self.num_particles):
             p = Particle(self.x_pos, self.y_pos)
             self.particle_list.append(p)
     

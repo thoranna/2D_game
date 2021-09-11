@@ -14,7 +14,7 @@ class MovingBall:
         self.y_pos = y_pos
         self.radius = radius 
 
-        self.speed = 0.2
+        self.speed = 0.35
         self.angle = 2*3.1415*random.random()
         
         self.r = random.random()

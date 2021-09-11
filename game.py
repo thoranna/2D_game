@@ -28,6 +28,7 @@ class Game:
         pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), DOUBLEBUF|OPENGL)
         glClearColor(0.0, 0.0, 0.0, 1.0)
         self.clock.tick()
+        self.game_lost = False
 
         # ENABLE TRANSPARANCY
         glEnable(GL_BLEND)
@@ -54,12 +55,14 @@ class Game:
                     (260, 160), 
                     (320, 220), 
                     (600, 60),
+                    (540, 120),
                     (660, 490),
                     (710, 540)]
         
         for t in positions:
             self.balls.append(MovingBall(*t))
 
+    # TODO: move this to ball.py functionality
     def check_collision(self, game_object1, game_object2):
         d = math.sqrt(((game_object2.x_pos - game_object1.x_pos)**2+(game_object2.y_pos - game_object1.y_pos)**2))
         if d <= game_object1.radius + game_object2.radius:
@@ -97,6 +100,8 @@ class Game:
 
         # UPDATE LOGIC
         for i, b1 in enumerate(self.balls):
+            if self.ship.calc_collision_w_bounding_box(b1):
+                self.game_lost = True
             for j in range(i+1, len(self.balls)):
                 b2 = self.balls[j]
                 if self.check_collision(b1, b2):
@@ -233,5 +238,24 @@ if __name__ == "__main__":
         game.game_loop()
         game.update()
         game.display()
-        if len(game.balls) == 0: # New game once you win
+        if len(game.balls) == 0: # If you win
+            game = Game()
+        if game.game_lost: # If you loose
+            game.ship.able_to_move = False
+            const = -1
+            for _ in range(200):
+                game.game_loop()
+                game.ship.decay = const
+                game.update()
+                game.display()
+                const = -const
+            game.ship.decay = 0
+            particles = Particles(game.ship.x_pos, game.ship.y_pos, 100)
+            for p in particles.particle_list:
+                p.decay_rate = 0.006
+            game.explosions.append(particles)
+            for _ in range(500):
+                game.game_loop()
+                game.update()
+                game.display()
             game = Game()
