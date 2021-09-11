@@ -8,7 +8,7 @@ WINDOWWIDTH = 800
 WINDOWHEIGHT = 600
 
 class MovingBall:
-    def __init__(self, x_pos, y_pos, radius = 27):
+    def __init__(self, x_pos, y_pos, radius=27):
 
         self.x_pos = x_pos
         self.y_pos = y_pos
@@ -56,6 +56,12 @@ class MovingBall:
                 self.is_colliding = False
         else:
             pass
+
+    def check_collision(self, other_ball_object):
+        d = math.sqrt(((self.x_pos - other_ball_object.x_pos)**2+(self.y_pos - other_ball_object.y_pos)**2))
+        if d <= self.radius + other_ball_object.radius:
+            return True
+        return False
     
     def display(self):
 

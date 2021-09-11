@@ -26,8 +26,8 @@ class Ship:
 
         self.able_to_move = True
 
-        self.bounding_box_height = 40
-        self.bounding_box_width = 64
+        self.bounding_box_height = 40*math.cos(self.orbit_angle)
+        self.bounding_box_width = 64*math.sin(self.orbit_angle)
 
     def display(self):
 

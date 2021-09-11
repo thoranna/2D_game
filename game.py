@@ -1,10 +1,7 @@
-""" 
-
+"""
 A simple 2D-Game, made for T-511-TGRA 
 Author: Þóranna Dís Bender (thoranna18@ru.is)
-
 """
-
 import pygame
 from pygame.locals import *
 
@@ -23,7 +20,7 @@ WINDOWWIDTH = 800
 WINDOWHEIGHT = 600
 
 class Game:
-    def __init__(self):
+    def __init__(self, level=1):
         self.delta_time = 1
         self.clock = pygame.time.Clock()
         pygame.display.init()
@@ -47,29 +44,70 @@ class Game:
         self.right = 0
         self.up = 0 
         self.down = 0
+        self.level = level
+        self.positions = []
 
-        positions = [(50, 150), 
-                    (100, 200),
-                    (160, 260),
-                    (220, 320), 
-                    (280, 380), 
-                    (200, 100), 
-                    (260, 160), 
-                    (320, 220), 
-                    (600, 60),
-                    (540, 120),
-                    (660, 490),
-                    (710, 540)]
+        if self.level == 1:
+            self.positions = [(40, 40), 
+                        (70, 150),
+                        (160, 260),
+                        (200, 60), 
+                        (280, 380), 
+                        (310, 100),
+                        (370, 120), 
+                        (400, 40), 
+                        (630, 120),
+                        (430, 90),
+                        (460, 490),
+                        (750, 500)]
+        elif self.level == 2:
+            self.positions = [(40, 40), 
+                        (70, 150),
+                        (160, 260),
+                        (200, 60), 
+                        (280, 380), 
+                        (310, 100), 
+                        (230, 160), 
+                        (340, 220), 
+                        (600, 60),
+                        (540, 120),
+                        (660, 490),
+                        (710, 540),
+                        (370, 120), 
+                        (400, 40), 
+                        (630, 120),
+                        (430, 90)]
+        elif self.level == 3:
+            self.positions = [(40, 40), 
+                        (70, 150),
+                        (160, 260),
+                        (200, 60), 
+                        (280, 380), 
+                        (310, 100), 
+                        (230, 160), 
+                        (340, 220), 
+                        (600, 60),
+                        (540, 120),
+                        (660, 490),
+                        (710, 540),
+                        (370, 120), 
+                        (400, 40), 
+                        (630, 120),
+                        (430, 90),
+                        (460, 490),
+                        (750, 500)]
         
-        for t in positions:
-            self.balls.append(MovingBall(*t))
-
-    # TODO: move this to ball.py functionality
-    def check_collision(self, game_object1, game_object2):
-        d = math.sqrt(((game_object2.x_pos - game_object1.x_pos)**2+(game_object2.y_pos - game_object1.y_pos)**2))
-        if d <= game_object1.radius + game_object2.radius:
-            return True
-        return False
+        for t in self.positions:
+            if self.level == 1:
+                self.balls.append(MovingBall(*t))
+            elif self.level == 2:
+                b = MovingBall(*t)
+                # b.speed = 0.4
+                self.balls.append(b)
+            elif self.level == 3:
+                b = MovingBall(*t)
+                # b.speed = 0.45
+                self.balls.append(b)
 
     def game_loop(self):
         
@@ -106,7 +144,7 @@ class Game:
                 self.game_lost = True
             for j in range(i+1, len(self.balls)):
                 b2 = self.balls[j]
-                if self.check_collision(b1, b2):
+                if b1.check_collision(b2):
                     if not ((b1.x_pos + b1.radius > WINDOWWIDTH or b1.x_pos - b1.radius < 0) or (b2.y_pos + b2.radius > WINDOWHEIGHT or b2.y_pos - b2.radius < 0)):
                         # BOUNCE
                         temp = b1.angle
@@ -240,8 +278,21 @@ if __name__ == "__main__":
         game.game_loop()
         game.update()
         game.display()
-        if len(game.balls) == 0: # If you win
-            game = Game()
+        if len(game.balls) == 0: # If you win a level
+            if game.level == 3: # If you win the last level
+                for t in game.positions:
+                    particles = Particles(*t)
+                    for p in particles.particle_list:
+                        p.r, p.b, p.g = random.random(), random.random(), random.random()
+                        p.decay = 1
+                    game.explosions.append(particles)
+                for _ in range(100):
+                    game.game_loop()
+                    game.update()
+                    game.display()
+                pass
+            game.level += 1
+            game = Game(level)
         if game.game_lost: # If you loose
             game.ship.able_to_move = False
             for b in game.balls:
