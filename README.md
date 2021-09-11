@@ -8,8 +8,9 @@ python -m game
 ```
 
 ## Functionality
-* &#8592 to move the ship left
-* &#8593 to move the ship up
-* &#8594 to move the ship right
-* &#8595 to move the ship down
+* <kbd>←</kbd> to move the ship left
+* <kbd>↑</kbd> to move the ship up
+* <kbd>→</kbd> to move the ship right
+* <kbd>↓</kbd> to move the ship down
 * <kbd>Space</kbd> to shoot 
+* 
