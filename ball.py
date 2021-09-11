@@ -22,36 +22,40 @@ class MovingBall:
         self.b = random.random()
 
         self.is_colliding = False
+        self.able_to_move = True 
 
     def update(self, delta_time):
 
-        self.x_pos += self.speed*delta_time*math.cos(self.angle)
-        self.y_pos += self.speed*delta_time*math.sin(self.angle)
-        if (self.y_pos + self.radius > WINDOWHEIGHT or self.y_pos - self.radius < 0) or (self.x_pos + self.radius > WINDOWWIDTH or self.x_pos - self.radius < 0):
-            if self.y_pos + self.radius > WINDOWHEIGHT or self.y_pos - self.radius < 0:
-                self.angle = -self.angle
-            else:
-                self.angle = math.pi - self.angle
+        if self.able_to_move:
+            self.x_pos += self.speed*delta_time*math.cos(self.angle)
+            self.y_pos += self.speed*delta_time*math.sin(self.angle)
+            if (self.y_pos + self.radius > WINDOWHEIGHT or self.y_pos - self.radius < 0) or (self.x_pos + self.radius > WINDOWWIDTH or self.x_pos - self.radius < 0):
+                if self.y_pos + self.radius > WINDOWHEIGHT or self.y_pos - self.radius < 0:
+                    self.angle = -self.angle
+                else:
+                    self.angle = math.pi - self.angle
 
-            if self.y_pos + self.radius > WINDOWHEIGHT:
-                self.y_pos = WINDOWHEIGHT - self.radius
-            elif self.y_pos - self.radius < 0:
-                self.y_pos = self.radius
-            if self.x_pos + self.radius > WINDOWWIDTH:
-                self.x_pos = WINDOWWIDTH - self.radius
-            elif self.x_pos - self.radius < 0:
-                self.x_pos = self.radius
+                if self.y_pos + self.radius > WINDOWHEIGHT:
+                    self.y_pos = WINDOWHEIGHT - self.radius
+                elif self.y_pos - self.radius < 0:
+                    self.y_pos = self.radius
+                if self.x_pos + self.radius > WINDOWWIDTH:
+                    self.x_pos = WINDOWWIDTH - self.radius
+                elif self.x_pos - self.radius < 0:
+                    self.x_pos = self.radius
+                
+                self.r = random.random()
+                self.g = random.random()
+                self.b = random.random()
             
-            self.r = random.random()
-            self.g = random.random()
-            self.b = random.random()
-        
-        # Change color on collision
-        if self.is_colliding:
-            self.r = random.random()
-            self.g = random.random()
-            self.b = random.random()
-            self.is_colliding = False
+            # Change color on collision
+            if self.is_colliding:
+                self.r = random.random()
+                self.g = random.random()
+                self.b = random.random()
+                self.is_colliding = False
+        else:
+            pass
     
     def display(self):
 

@@ -1,6 +1,8 @@
-"""
-    2D-Game
-    Author: Þóranna Dís Bender (thoranna18@ru.is)
+""" 
+
+A simple 2D-Game, made for T-511-TGRA 
+Author: Þóranna Dís Bender (thoranna18@ru.is)
+
 """
 
 import pygame
@@ -242,8 +244,10 @@ if __name__ == "__main__":
             game = Game()
         if game.game_lost: # If you loose
             game.ship.able_to_move = False
+            for b in game.balls:
+                b.able_to_move = False
             const = -1
-            for _ in range(200):
+            for _ in range(100):
                 game.game_loop()
                 game.ship.decay = const
                 game.update()
@@ -252,9 +256,9 @@ if __name__ == "__main__":
             game.ship.decay = 0
             particles = Particles(game.ship.x_pos, game.ship.y_pos, 100)
             for p in particles.particle_list:
-                p.decay_rate = 0.006
+                p.decay_rate = 0.005
             game.explosions.append(particles)
-            for _ in range(500):
+            for _ in range(600):
                 game.game_loop()
                 game.update()
                 game.display()

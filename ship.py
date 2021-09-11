@@ -31,40 +31,6 @@ class Ship:
 
     def display(self):
 
-        # # DISPLAY BOUNDING BOX - TODO: REMOVE LATER
-        # glBegin(GL_LINES)
-        # # BOTTOM LINE
-        # A = (self.x_pos-self.width-15, self.y_pos-self.height-25/2)
-        # B = (self.x_pos+self.width+15, self.y_pos-self.height-25/2)
-        # # TOP LINE
-        # C = (self.x_pos-self.width-15, self.y_pos+self.height+25/2)
-        # D = (self.x_pos+self.width+15, self.y_pos+self.height+25/2)
-        # # SIDE 1
-        # E = (self.x_pos+self.height-40, self.y_pos-self.width-27)
-        # F = (self.x_pos+self.height-40, self.y_pos+self.width+27)
-        # # SIDE 2
-        # G = (self.x_pos+self.height, self.y_pos-self.width-27)
-        # H = (self.x_pos+self.height, self.y_pos+self.width+27)
-
-        # aabb_center = (self.x_pos + 20, self.y_pos + 32)
-        # aabb = (self.x_pos, self.y_pos)
-
-        # glColor3f(self.r, self.g, self.b)
-        
-        # glVertex2f(*A)
-        # glVertex2f(*B)
-        # glVertex2f(*C)
-        # glVertex2f(*D)
-        # glVertex2f(*E)
-        # glVertex2f(*F)
-        # glVertex2f(*G)
-        # glVertex2f(*H)
-        # glVertex2f(*aabb_center)
-        # glVertex2f(*aabb)
-        # glEnd()
-
-        # TODO: REMOVE UP TO HERE
-
         glPushMatrix()
         glTranslate(self.x_pos, self.y_pos, 0)
         glRotate(self.orbit_angle*180/math.pi, 0, 0, 1)
