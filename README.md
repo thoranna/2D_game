@@ -1,11 +1,15 @@
-# Moving box using OpenGL
+# A simple 2D-game using OpenGL
 
-## Run the program
+## Start the game
 
 ```
 python -m pip install -r requirements.txt
-python -m box
+python -m game
 ```
 
 ## Functionality
-TODO: write this properly 
+* &#8592 to move the ship left
+* &#8593 to move the ship up
+* &#8594 to move the ship right
+* &#8595 to move the ship down
+* <kbd>Space</kbd> to shoot 
