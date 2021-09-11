@@ -1,7 +1,8 @@
 """
 A simple 2D-Game, made for T-511-TGRA 
-Author: Þóranna Dís Bender (thoranna18@ru.is)
+Author: Þóranna Dís Bender (thoranna18@ru.is) 
 """
+
 import pygame
 from pygame.locals import *
 
@@ -186,7 +187,7 @@ class Game:
         self.balls_to_add = []
         for i, b1 in enumerate(self.balls):
             for j, bullet in enumerate(self.bullets):
-                if self.check_collision(b1, bullet):
+                if b1.check_collision(bullet):
                     if b1.radius <= 13.5:
                         particles = Particles(b1.x_pos, b1.y_pos)
                         for p in particles.particle_list:
@@ -198,7 +199,6 @@ class Game:
                             smaller_ball1 = MovingBall(b1.x_pos + b1.radius/2, b1.y_pos + b1.radius/2, b1.radius/2)
                             smaller_ball2 = MovingBall(b1.x_pos - b1.radius/2, b1.y_pos - b1.radius/2, b1.radius/2)
                         else:
-                            # TODO: TAKE A BETTER LOOK AT THIS LOGIC 
                             if b1.x_pos + b1.radius/2 > WINDOWWIDTH:
                                 smaller_ball1 = MovingBall(b1.x_pos - b1.radius/2, b1.y_pos + b1.radius/2, b1.radius/2)
                                 smaller_ball1 = MovingBall(b1.x_pos - b1.radius/2, b1.y_pos + b1.radius/2, b1.radius/2)

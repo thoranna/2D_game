@@ -31,50 +31,52 @@ class Ship:
 
     def display(self):
 
-        glPushMatrix()
-        glTranslate(self.x_pos, self.y_pos, 0)
-        glRotate(self.orbit_angle*180/math.pi, 0, 0, 1)
-        glBegin(GL_TRIANGLES)
-        glColor4f(self.r, self.g, self.b, self.decay)
+        offsets = [(0,0), (WINDOWWIDTH, 0), (-WINDOWWIDTH, 0), (0, WINDOWHEIGHT), (0, -WINDOWHEIGHT)]
+        for i in range(5):
+            glPushMatrix()
+            glTranslate(self.x_pos+offsets[i][0], self.y_pos+offsets[i][1], 0)
+            glRotate(self.orbit_angle*180/math.pi, 0, 0, 1)
+            glBegin(GL_TRIANGLES)
+            glColor4f(self.r, self.g, self.b, self.decay)
 
-        # Body of the ship 
-        A = (-self.width, -self.height)
-        B = (self.width, -self.height)
-        C = (-self.width, self.height)
-        D = (self.width, self.height)
-        E = (0, self.height+25) # Top point
-        F = (-self.width, self.height - 20) # Left wing
-        G = (self.width, self.height - 20) # Right wing
-        H = (-self.width-20, self.height-30) # Left wing
-        I = (self.width + 20, self.height-30) # Right wing
+            # Body of the ship 
+            A = (-self.width, -self.height)
+            B = (self.width, -self.height)
+            C = (-self.width, self.height)
+            D = (self.width, self.height)
+            E = (0, self.height+25) # Top point
+            F = (-self.width, self.height - 20) # Left wing
+            G = (self.width, self.height - 20) # Right wing
+            H = (-self.width-20, self.height-30) # Left wing
+            I = (self.width + 20, self.height-30) # Right wing
 
-        # BODY 
-        glVertex2f(*A)
-        glVertex2f(*C)
-        glVertex2f(*D)
+            # BODY 
+            glVertex2f(*A)
+            glVertex2f(*C)
+            glVertex2f(*D)
 
-        glVertex2f(*B)
-        glVertex2f(*D)
-        glVertex2f(*C)
+            glVertex2f(*B)
+            glVertex2f(*D)
+            glVertex2f(*C)
 
-        # TOP
-        glVertex2f(*D)
-        glVertex2f(*C)
-        glVertex2f(*E)
+            # TOP
+            glVertex2f(*D)
+            glVertex2f(*C)
+            glVertex2f(*E)
 
-        # LEFT SIDE
-        glVertex2f(*C)
-        glVertex2f(*F)
-        glVertex2f(*H)
+            # LEFT SIDE
+            glVertex2f(*C)
+            glVertex2f(*F)
+            glVertex2f(*H)
 
-        # RIGHT SIDE
-        glVertex2f(*D)
-        glVertex2f(*G)
-        glVertex2f(*I)
+            # RIGHT SIDE
+            glVertex2f(*D)
+            glVertex2f(*G)
+            glVertex2f(*I)
 
-        glEnd()
+            glEnd()
 
-        glPopMatrix()
+            glPopMatrix()
 
     def clamp(self, val, min_, max_):
         return max(min_, min(max_, val))
@@ -97,6 +99,15 @@ class Ship:
         if not self.able_to_move:
             pass
         else:
+            if (self.y_pos + self.height + 25 > WINDOWHEIGHT or self.y_pos - self.height - 25 < 0) or (self.x_pos + self.width + 20 > WINDOWWIDTH or self.x_pos - self.width - 20 < 0):
+                if self.y_pos > WINDOWHEIGHT:
+                    self.y_pos = 0
+                elif self.y_pos < 0:
+                    self.y_pos = WINDOWHEIGHT
+                elif self.x_pos > WINDOWWIDTH:
+                    self.x_pos = 0 
+                elif self.x_pos < 0:
+                    self.x_pos = WINDOWWIDTH
             if left:
                 self.orbit_angle -= 0.01*delta_time
             if right:
